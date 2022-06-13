@@ -1,0 +1,459 @@
+openapi: 3.0.0
+info:
+  title: 在线考试
+  description: 在线考试插件，插件不能单独运行
+  version: 1.0.0
+paths:
+  /admin/exam:
+    post:
+      tags:
+        - 'Exam item'
+      summary: 添加考试科目
+      operationId: addExam
+      requestBody:
+        description: 考试科目
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExamEntity'
+      responses:
+        '201':
+          description: 创建成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - { properties: { id: { type: integer } }, type: object }
+                  - { $ref: '#/components/schemas/Success' }
+        '400':
+          description: 请求失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        -
+          bearerAuth: []
+  '/admin/exam/{id}':
+    put:
+      tags:
+        - 'Exam item'
+      summary: 修改考试科目
+      operationId: editExam
+      parameters:
+        -
+          name: id
+          in: path
+          description: 科目ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: 指定需要更新数据
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExamEntity'
+      responses:
+        '201':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - { properties: { upNum: { type: integer } }, type: object }
+                  - { $ref: '#/components/schemas/Success' }
+        '400':
+          description: 请求失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        -
+          bearerAuth: []
+    delete:
+      tags:
+        - 'Exam item'
+      summary: 删除考试科目
+      operationId: delExam
+      parameters:
+        -
+          name: id
+          in: path
+          description: 科目ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - { properties: { delNum: { type: integer } }, type: object }
+                  - { $ref: '#/components/schemas/Success' }
+        '400':
+          description: 请求失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        -
+          bearerAuth: []
+  '/api/exam/{id}':
+    get:
+      tags:
+        - Exam
+      summary: 获取指定考试科目
+      operationId: GetExamItem
+      parameters:
+        -
+          name: id
+          in: path
+          description: ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - { $ref: '#/components/schemas/Success' }
+                  - { $ref: '#/components/schemas/ExamEntity' }
+        '400':
+          description: 请求失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        -
+          bearerAuth: []
+  /admin/exam/question:
+    post:
+      tags:
+        - 'Question bank'
+      summary: 添加考试试题
+      operationId: addQuestion
+      requestBody:
+        description: 考试试题
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExamQuestionsEntity'
+      responses:
+        '201':
+          description: 创建成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - { properties: { id: { type: integer } }, type: object }
+                  - { $ref: '#/components/schemas/Success' }
+        '400':
+          description: 请求失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        -
+          bearerAuth: []
+  '/admin/exam/question/{id}':
+    put:
+      tags:
+        - 'Question bank'
+      summary: 修改考试试题
+      operationId: editQuestion
+      parameters:
+        -
+          name: id
+          in: path
+          description: 试题ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: 指定需要更新数据
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExamQuestionsEntity'
+      responses:
+        '201':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - { properties: { upNum: { type: integer } }, type: object }
+                  - { $ref: '#/components/schemas/Success' }
+        '400':
+          description: 请求失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        -
+          bearerAuth: []
+    delete:
+      tags:
+        - 'Question bank'
+      summary: 删除考试试题
+      operationId: delQuestion
+      parameters:
+        -
+          name: id
+          in: path
+          description: 试题ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - { properties: { delNum: { type: integer } }, type: object }
+                  - { $ref: '#/components/schemas/Success' }
+        '400':
+          description: 请求失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        -
+          bearerAuth: []
+  '/api/exam/question/{id}':
+    get:
+      tags:
+        - Exam
+      summary: 获取指定科目考试试题
+      operationId: GetQuestion
+      parameters:
+        -
+          name: id
+          in: path
+          description: 考试科目ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - { $ref: '#/components/schemas/Success' }
+                  - { $ref: '#/components/schemas/ExamQuestionsEntity' }
+        '400':
+          description: 请求失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        -
+          bearerAuth: []
+  /api/exam/score:
+    post:
+      tags:
+        - Exam
+      summary: 考试交卷
+      operationId: addScore
+      requestBody:
+        description: 考试成绩
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExamScoreEntity'
+      responses:
+        '201':
+          description: 提交成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - { properties: { id: { type: integer } }, type: object }
+                  - { $ref: '#/components/schemas/Success' }
+        '400':
+          description: 请求失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        -
+          bearerAuth: []
+  '/api/exam/score/{id}':
+    get:
+      tags:
+        - Exam
+      summary: 查询考试成绩
+      operationId: GetScore
+      parameters:
+        -
+          name: id
+          in: path
+          description: 考试成绩ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - { $ref: '#/components/schemas/Success' }
+                  - { $ref: '#/components/schemas/ExamScoreEntity' }
+        '400':
+          description: 请求失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        -
+          bearerAuth: []
+components:
+  schemas:
+    Error:
+      title: 出错提示
+      type: object
+    Success:
+      title: 成功提示
+      type: object
+    ExamEntity:
+      title: 考题科目
+      description: 考题科目，考题内容
+      required:
+        - title
+      properties:
+        title:
+          description: 考题科目
+          type: string
+        description:
+          description: 考题科目介绍
+          type: string
+        cover:
+          description: 封面、海报
+          type: string
+        size:
+          description: '每次抽取考题数量,最多999题，成绩按满分100分计算'
+          type: integer
+        examTime:
+          description: '考试时间,最多999分钟'
+          type: integer
+        startTime:
+          description: 考题科目开始时间
+          type: integer
+        endTime:
+          description: 考题科目结束时间
+          type: integer
+        ctime:
+          description: 创建时间
+          type: integer
+      type: object
+    ExamQuestionsEntity:
+      title: 考题
+      description: 考题
+      required:
+        - question
+        - answer
+      properties:
+        examId:
+          description: 考试科目ID
+          type: integer
+        question:
+          description: 考题内容
+          type: string
+        answerItem:
+          description: '选择题答案选项,填空题留空'
+          type: array
+          items: {  }
+        answer:
+          description: 正确答案
+          type: array
+          items: {  }
+        orderly:
+          description: 填空题答案是否有序
+          type: integer
+        ctime:
+          description: 入库时间
+          type: integer
+      type: object
+    ExamScoreEntity:
+      title: 答题记录
+      description: 用户答题记录
+      required:
+        - uid
+        - questions
+      properties:
+        uid:
+          description: 答题用户ID
+          type: integer
+        name:
+          description: 姓名
+          type: string
+        tel:
+          description: 电话
+          type: string
+        questions:
+          description: 考题
+          type: array
+          items: {  }
+        answer:
+          description: 答案
+          type: array
+          items: {  }
+        startTime:
+          description: 开始答题时间
+          type: integer
+        endTime:
+          description: 结束答题时间
+          type: integer
+        score:
+          description: 得分
+          type: number
+          format: float
+      type: object
+  securitySchemes:
+    bearerAuth:
+      type: http
+      bearerFormat: JWT
+      scheme: bearer
+tags:
+  -
+    name: Exam
+    description: 前端考试
+  -
+    name: 'Exam item'
+    description: 考试科目管理
+  -
+    name: 'Question bank'
+    description: 后端题库管理

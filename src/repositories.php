@@ -5,6 +5,8 @@ use DI\ContainerBuilder;
 
 return function (ContainerBuilder $containerBuilder) {
   $containerBuilder->addDefinitions([
-    \Wanphp\Plugins\About\Domain\AboutInterface::class => \DI\autowire(\Wanphp\Plugins\About\Repositories\AboutRepository::class)
+    \Wanphp\Plugins\Exam\Domain\ExamQuestionsInterface::class => \DI\autowire(\Wanphp\Plugins\Exam\Repositories\ExamQuestionRepository::class),
+    \Wanphp\Plugins\Exam\Domain\ExamScoreInterface::class => \DI\autowire(\Wanphp\Plugins\Exam\Repositories\ExamScoreRepository::class),
+    \Wanphp\Plugins\Exam\Domain\ExamInterface::class => \DI\autowire(\Wanphp\Plugins\Exam\Repositories\ExamRepository::class)
   ]);
 };
