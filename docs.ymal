@@ -107,30 +107,19 @@ paths:
       security:
         -
           bearerAuth: []
-  '/api/exam/{id}':
+  /api/exam:
     get:
       tags:
-        - Exam
-      summary: 获取指定考试科目
-      operationId: GetExamItem
-      parameters:
-        -
-          name: id
-          in: path
-          description: ID
-          required: true
-          schema:
-            type: integer
-            format: int64
+        - 'Exam item'
+      summary: 考试科目管理
+      operationId: ExamItemManager
       responses:
         '200':
           description: 请求成功
           content:
             application/json:
               schema:
-                allOf:
-                  - { $ref: '#/components/schemas/Success' }
-                  - { $ref: '#/components/schemas/ExamEntity' }
+                $ref: '#/components/schemas/Success'
         '400':
           description: 请求失败
           content:
@@ -160,8 +149,8 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - { properties: { id: { type: integer } }, type: object }
                   - { $ref: '#/components/schemas/Success' }
+                  - { $ref: '#/components/schemas/ExamQuestionsEntity' }
         '400':
           description: 请求失败
           content:
@@ -172,6 +161,36 @@ paths:
         -
           bearerAuth: []
   '/admin/exam/question/{id}':
+    get:
+      tags:
+        - 'Question bank'
+      summary: 考试试题管理
+      operationId: ListQuestion
+      parameters:
+        -
+          name: id
+          in: path
+          description: 科目ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '400':
+          description: 请求失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        -
+          bearerAuth: []
     put:
       tags:
         - 'Question bank'
@@ -200,8 +219,8 @@ paths:
             application/json:
               schema:
                 allOf:
-                  - { properties: { upNum: { type: integer } }, type: object }
                   - { $ref: '#/components/schemas/Success' }
+                  - { $ref: '#/components/schemas/ExamQuestionsEntity' }
         '400':
           description: 请求失败
           content:
@@ -243,71 +262,7 @@ paths:
       security:
         -
           bearerAuth: []
-  '/api/exam/question/{id}':
-    get:
-      tags:
-        - Exam
-      summary: 获取指定科目考试试题
-      operationId: GetQuestion
-      parameters:
-        -
-          name: id
-          in: path
-          description: 考试科目ID
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: 请求成功
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - { $ref: '#/components/schemas/Success' }
-                  - { $ref: '#/components/schemas/ExamQuestionsEntity' }
-        '400':
-          description: 请求失败
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-      security:
-        -
-          bearerAuth: []
-  /api/exam/score:
-    post:
-      tags:
-        - Exam
-      summary: 考试交卷
-      operationId: addScore
-      requestBody:
-        description: 考试成绩
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ExamScoreEntity'
-      responses:
-        '201':
-          description: 提交成功
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - { properties: { id: { type: integer } }, type: object }
-                  - { $ref: '#/components/schemas/Success' }
-        '400':
-          description: 请求失败
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-      security:
-        -
-          bearerAuth: []
-  '/api/exam/score/{id}':
+  '/admin/exam/score/{id}':
     get:
       tags:
         - Exam
@@ -340,6 +295,101 @@ paths:
       security:
         -
           bearerAuth: []
+  /api/user/score:
+    post:
+      tags:
+        - Exam
+      summary: 用户考试交卷
+      operationId: addScore
+      requestBody:
+        description: 考试成绩
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExamScoreEntity'
+      responses:
+        '201':
+          description: 提交成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - { properties: { id: { type: integer } }, type: object }
+                  - { $ref: '#/components/schemas/Success' }
+        '400':
+          description: 请求失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        -
+          bearerAuth: []
+  '/api/user/score/{id}':
+    get:
+      tags:
+        - Exam
+      summary: 查询考试成绩
+      operationId: userGetScore
+      parameters:
+        -
+          name: id
+          in: path
+          description: 考试成绩ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - { $ref: '#/components/schemas/Success' }
+                  - { $ref: '#/components/schemas/ExamScoreEntity' }
+        '400':
+          description: 请求失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        -
+          bearerAuth: []
+  '/api/exam/randquestion/{id}':
+    get:
+      tags:
+        - Exam
+      summary: 获取指定科目考试试题
+      operationId: GetRandQuestion
+      parameters:
+        -
+          name: id
+          in: path
+          description: 考试科目ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 请求成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Success'
+        '400':
+          description: 请求失败
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        -
+          bearerAuth: []
 components:
   schemas:
     Error:
@@ -359,6 +409,9 @@ components:
           type: string
         description:
           description: 考题科目介绍
+          type: string
+        content:
+          description: 考题科目说明
           type: string
         cover:
           description: 封面、海报
@@ -414,6 +467,9 @@ components:
         - uid
         - questions
       properties:
+        examId:
+          description: 考试科目ID
+          type: integer
         uid:
           description: 答题用户ID
           type: integer

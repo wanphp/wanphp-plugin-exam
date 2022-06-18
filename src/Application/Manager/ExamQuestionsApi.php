@@ -1,34 +1,38 @@
 <?php
 
-namespace Wanphp\Libray\Slim;
+namespace Wanphp\Plugins\Exam\Application\Manager;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Wanphp\Plugins\Exam\Application\Api;
 use Wanphp\Plugins\Exam\Domain\ExamInterface;
+use Wanphp\Plugins\Exam\Domain\ExamQuestionsInterface;
 
-class ExamApi extends Api
+class ExamQuestionsApi extends Api
 {
+
+  private ExamQuestionsInterface $questions;
   private ExamInterface $exam;
 
-  public function __construct(ExamInterface $exam)
+  public function __construct(ExamQuestionsInterface $questions, ExamInterface $exam)
   {
+    $this->questions = $questions;
     $this->exam = $exam;
   }
 
   /**
    * @inheritDoc
    * @OA\Post(
-   *  path="/admin/exam",
-   *  tags={"Exam item"},
+   *  path="/admin/exam/question",
+   *  tags={"Question bank"},
    *  security={{"bearerAuth":{}}},
-   *  summary="添加考试科目",
-   *  operationId="addExam",
+   *  summary="添加考试试题",
+   *  operationId="addQuestion",
    *   @OA\RequestBody(
-   *     description="考试科目",
+   *     description="考试试题",
    *     required=true,
    *     @OA\MediaType(
    *       mediaType="application/json",
-   *       @OA\Schema(ref="#/components/schemas/ExamEntity")
+   *       @OA\Schema(ref="#/components/schemas/ExamQuestionsEntity")
    *     )
    *   ),
    *  @OA\Response(
@@ -37,24 +41,22 @@ class ExamApi extends Api
    *    @OA\JsonContent(
    *      allOf={
    *       @OA\Schema(ref="#/components/schemas/Success"),
-   *       @OA\Schema(
-   *         @OA\Property(property="id",type="integer")
-   *       )
+   *       @OA\Schema(ref="#/components/schemas/ExamQuestionsEntity")
    *      }
    *    )
    *  ),
    *  @OA\Response(response="400",description="请求失败",@OA\JsonContent(ref="#/components/schemas/Error"))
    * )
    * @OA\Put(
-   *  path="/admin/exam/{id}",
-   *  tags={"Exam item"},
+   *  path="/admin/exam/question/{id}",
+   *  tags={"Question bank"},
    *  security={{"bearerAuth":{}}},
-   *  summary="修改考试科目",
-   *  operationId="editExam",
+   *  summary="修改考试试题",
+   *  operationId="editQuestion",
    *   @OA\Parameter(
    *     name="id",
    *     in="path",
-   *     description="科目ID",
+   *     description="试题ID",
    *     required=true,
    *     @OA\Schema(format="int64",type="integer")
    *   ),
@@ -63,7 +65,7 @@ class ExamApi extends Api
    *     required=true,
    *     @OA\MediaType(
    *       mediaType="application/json",
-   *       @OA\Schema(ref="#/components/schemas/ExamEntity")
+   *       @OA\Schema(ref="#/components/schemas/ExamQuestionsEntity")
    *     )
    *   ),
    *  @OA\Response(
@@ -72,24 +74,22 @@ class ExamApi extends Api
    *    @OA\JsonContent(
    *      allOf={
    *       @OA\Schema(ref="#/components/schemas/Success"),
-   *       @OA\Schema(
-   *         @OA\Property(property="upNum",type="integer")
-   *       )
+   *       @OA\Schema(ref="#/components/schemas/ExamQuestionsEntity")
    *      }
    *    )
    *  ),
    *  @OA\Response(response="400",description="请求失败",@OA\JsonContent(ref="#/components/schemas/Error"))
    * )
    * @OA\Delete(
-   *  path="/admin/exam/{id}",
-   *  tags={"Exam item"},
-   *  summary="删除考试科目",
-   *  operationId="delExam",
+   *  path="/admin/exam/question/{id}",
+   *  tags={"Question bank"},
+   *  summary="删除考试试题",
+   *  operationId="delQuestion",
    *  security={{"bearerAuth":{}}},
    *  @OA\Parameter(
    *    name="id",
    *    in="path",
-   *    description="科目ID",
+   *    description="试题ID",
    *    required=true,
    *    @OA\Schema(format="int64",type="integer")
    *  ),
@@ -108,28 +108,19 @@ class ExamApi extends Api
    *  @OA\Response(response="400",description="请求失败",@OA\JsonContent(ref="#/components/schemas/Error"))
    * )
    * @OA\Get(
-   *  path="/api/exam/{id}",
-   *  tags={"Exam"},
-   *  summary="获取指定考试科目",
-   *  operationId="GetExamItem",
+   *  path="/admin/exam/question/{id}",
+   *  tags={"Question bank"},
+   *  summary="考试试题管理",
+   *  operationId="ListQuestion",
    *  security={{"bearerAuth":{}}},
    *  @OA\Parameter(
    *    name="id",
    *    in="path",
-   *    description="ID",
+   *    description="科目ID",
    *    required=true,
    *    @OA\Schema(format="int64",type="integer")
    *  ),
-   *  @OA\Response(
-   *    response="200",
-   *    description="请求成功",
-   *    @OA\JsonContent(
-   *      allOf={
-   *       @OA\Schema(ref="#/components/schemas/Success"),
-   *       @OA\Schema(ref="#/components/schemas/ExamEntity")
-   *      }
-   *    )
-   *  ),
+   *  @OA\Response(response="200",description="请求成功",@OA\JsonContent(ref="#/components/schemas/Success")),
    *  @OA\Response(response="400",description="请求失败",@OA\JsonContent(ref="#/components/schemas/Error"))
    * )
    */
@@ -138,40 +129,64 @@ class ExamApi extends Api
     switch ($this->request->getMethod()) {
       case 'POST':
         $data = $this->getFormData();
-        $id = $this->exam->get('id', ['title' => $data['title']]);
+        $id = $this->questions->get('id', ['question' => $data['question']]);
         if (is_numeric($id) && $id > 0) {
-          return $this->respondWithError('考试科目已添加过');
+          return $this->respondWithError('考题已添加过');
         } else {
           $data['ctime'] = time();
-          return $this->respondWithData(['id' => $this->exam->insert($data)], 201);
+          $data['id'] = $this->questions->insert($data);
+          return $this->respondWithData($data, 201);
         }
       case 'PUT':
         $data = $this->getFormData();
         $id = (int)$this->resolveArg('id');
-        if (isset($data['title'])) {
-          $exam_id = $this->exam->get('id', ['id[!]' => $id, 'title' => $data['title']]);
+        if (isset($data['question'])) {
+          $exam_id = $this->questions->get('id', ['id[!]' => $id, 'question' => $data['question']]);
           if ($exam_id) {
-            return $this->respondWithError('考试科目已存在');
+            return $this->respondWithError('考题已存在');
           }
         }
         if ($id > 0) {
-          return $this->respondWithData(['upNum' => $this->exam->update($data, ['id' => $id])], 201);
+          $this->questions->update($data, ['id' => $id]);
+          $data['id'] = $id;
+          return $this->respondWithData($data, 201);
         } else {
           return $this->respondWithError('ID错误');
         }
       case 'DELETE':
         $id = (int)$this->resolveArg('id');
         if ($id > 0) {
-          return $this->respondWithData(['delNum' => $this->exam->delete(['id' => $id])]);
+          return $this->respondWithData(['delNum' => $this->questions->delete(['id' => $id])]);
         } else {
           return $this->respondWithError('ID错误');
         }
-      case 'GET';
-        $id = (int)$this->resolveArg('id');
-        if ($id > 0) {
-          return $this->respondWithData($this->exam->get('*', ['id' => $id]));
+      case 'GET':
+        if ($this->request->getHeaderLine("X-Requested-With") == "XMLHttpRequest") {
+          $where = ['examId' => $this->resolveArg('id')];
+          $params = $this->request->getQueryParams();
+          if (!empty($params['search']['value'])) {
+            $keyword = trim($params['search']['value']);
+            $where['question[~]'] = $keyword;
+          }
+
+          $recordsFiltered = $this->questions->count('id', $where);
+          $where['LIMIT'] = $this->getLimit();
+          $where['ORDER'] = $this->getOrder();
+
+          $data = [
+            "draw" => $params['draw'],
+            "recordsTotal" => $this->questions->count('id', ['examId' => $this->resolveArg('id')]),
+            "recordsFiltered" => $recordsFiltered,
+            'data' => $this->questions->select('*', $where)
+          ];
+          return $this->respondWithData($data);
         } else {
-          return $this->respondWithError('ID错误');
+          $data = [
+            'title' => '考试试题管理',
+            'id' => $this->resolveArg('id')
+          ];
+
+          return $this->respondView('@exam/exam-question.html', $data);
         }
       default:
         return $this->respondWithError('禁止访问', 403);

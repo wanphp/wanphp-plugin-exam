@@ -1,6 +1,6 @@
 <?php
 
-namespace Wanphp\Libray\Slim;
+namespace Wanphp\Plugins\Exam\Application\Manager;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Wanphp\Plugins\Exam\Application\Api;
@@ -20,36 +20,8 @@ class ExamScoreApi extends Api
 
   /**
    * @inheritDoc
-   * @OA\Post(
-   *  path="/api/exam/score",
-   *  tags={"Exam"},
-   *  security={{"bearerAuth":{}}},
-   *  summary="考试交卷",
-   *  operationId="addScore",
-   *   @OA\RequestBody(
-   *     description="考试成绩",
-   *     required=true,
-   *     @OA\MediaType(
-   *       mediaType="application/json",
-   *       @OA\Schema(ref="#/components/schemas/ExamScoreEntity")
-   *     )
-   *   ),
-   *  @OA\Response(
-   *    response="201",
-   *    description="提交成功",
-   *    @OA\JsonContent(
-   *      allOf={
-   *       @OA\Schema(ref="#/components/schemas/Success"),
-   *       @OA\Schema(
-   *         @OA\Property(property="id",type="integer")
-   *       )
-   *      }
-   *    )
-   *  ),
-   *  @OA\Response(response="400",description="请求失败",@OA\JsonContent(ref="#/components/schemas/Error"))
-   * )
    * @OA\Get(
-   *  path="/api/exam/score/{id}",
+   *  path="/admin/exam/score/{id}",
    *  tags={"Exam"},
    *  summary="查询考试成绩",
    *  operationId="GetScore",
@@ -77,11 +49,6 @@ class ExamScoreApi extends Api
   protected function action(): Response
   {
     switch ($this->request->getMethod()) {
-      case 'POST':
-        $data = $this->getFormData();
-        $data['uid'] = $this->getUid();
-        $data['ctime'] = time();
-        return $this->respondWithData(['id' => $this->examScore->insert($data)], 201);
       case 'GET';
         $id = (int)$this->resolveArg('id');
         $score = $this->examScore->get('uid,questions[JSON],answer[JSON],startTime,endTime,score', ['id' => $id]);

@@ -18,7 +18,8 @@
   "require": {
     "wanphp/installers": "^1.0.0",
     "wanphp/libray-slim": "^1.0.0",
-    "wanphp/libray-mysql": "^1.1.0"
+    "wanphp/libray-mysql": "^1.0.0",
+    "wanphp/libray-user": "^1.0.0"
   },
   "require-dev": {
     "zircote/swagger-php": "^3.1"

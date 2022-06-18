@@ -22,6 +22,12 @@ class ExamScoreEntity implements JsonSerializable
    */
   private ?int $id;
   /**
+   * @DBType({"key": "MUL","type":"smallint NULL DEFAULT NULL"})
+   * @OA\Property(description="考试科目ID")
+   * @var integer
+   */
+  private int $examId;
+  /**
    * @DBType({"key": "MUL","type":"int(11) NULL DEFAULT NULL"})
    * @OA\Property(description="答题用户ID")
    * @var integer

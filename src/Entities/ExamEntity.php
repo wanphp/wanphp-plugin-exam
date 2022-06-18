@@ -28,11 +28,17 @@ class ExamEntity implements \JsonSerializable
    */
   private string $title;
   /**
-   * @DBType({"type":"varchar(500) NOT NULL DEFAULT '[]'"})
+   * @DBType({"type":"varchar(500) NOT NULL DEFAULT ''"})
    * @var string
    * @OA\Property(description="考题科目介绍")
    */
   private string $description;
+  /**
+   * @DBType({"type":"text NOT NULL DEFAULT ''"})
+   * @var string
+   * @OA\Property(description="考题科目说明")
+   */
+  private string $content;
   /**
    * @DBType({"type":"varchar(50) NOT NULL DEFAULT ''"})
    * @var string
