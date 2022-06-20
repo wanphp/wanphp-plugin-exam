@@ -1,6 +1,6 @@
 <?php
 
-namespace Wanphp\Plugins\Exam\Application\Manager;
+namespace Wanphp\Plugins\Exam\Application\Manage;
 
 use Exception;
 use Psr\Container\ContainerExceptionInterface;

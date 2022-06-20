@@ -17,12 +17,12 @@ return function (App $app, Middleware $PermissionMiddleware, Middleware $OAuthSe
 
   $app->group('/admin', function (Group $group) {
     //考试科目管理
-    $group->map(['PUT', 'POST', 'DELETE'], '/exam[/{id:[0-9]+}]', \Wanphp\Plugins\Exam\Application\Manager\ExamApi::class);
-    $group->get('/exam/content[/{id:[0-9]+}]', \Wanphp\Plugins\Exam\Application\Manager\ExamContent::class);
+    $group->map(['PUT', 'POST', 'DELETE'], '/exam[/{id:[0-9]+}]', \Wanphp\Plugins\Exam\Application\Manage\ExamApi::class);
+    $group->get('/exam/content[/{id:[0-9]+}]', \Wanphp\Plugins\Exam\Application\Manage\ExamContentApi::class);
     //考试题目管理
-    $group->map(['GET', 'PUT', 'POST', 'DELETE'], '/exam/question[/{id:[0-9]+}]', \Wanphp\Plugins\Exam\Application\Manager\ExamQuestionsApi::class);
+    $group->map(['GET', 'PUT', 'POST', 'DELETE'], '/exam/question[/{id:[0-9]+}]', \Wanphp\Plugins\Exam\Application\Manage\ExamQuestionsApi::class);
     //考试记录
-    $group->get('/exam/record/{id:[0-9]+}', \Wanphp\Plugins\Exam\Application\Manager\ExamRecordApi::class);
+    $group->get('/exam/record/{id:[0-9]+}', \Wanphp\Plugins\Exam\Application\Manage\ExamRecordApi::class);
   })->addMiddleware($PermissionMiddleware);
 };
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Wanphp\Plugins\Exam\Application\Manager;
+namespace Wanphp\Plugins\Exam\Application\Manage;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Wanphp\Plugins\Exam\Application\Api;
@@ -10,7 +10,7 @@ use Wanphp\Plugins\Exam\Domain\ExamInterface;
  * ExamApi
  * @title 自定义菜单
  * @route /admin/exam
- * @package Wanphp\Plugins\Exam\Application\Manager
+ * @package Wanphp\Plugins\Exam\Application\Manage
  */
 class ExamApi extends Api
 {

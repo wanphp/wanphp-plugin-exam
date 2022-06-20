@@ -1,11 +1,11 @@
 <?php
 
-namespace Wanphp\Plugins\Exam\Application\Manager;
+namespace Wanphp\Plugins\Exam\Application\Manage;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Wanphp\Plugins\Exam\Domain\ExamInterface;
 
-class ExamContent extends \Wanphp\Plugins\Exam\Application\Api
+class ExamContentApi extends \Wanphp\Plugins\Exam\Application\Api
 {
   private ExamInterface $exam;
 

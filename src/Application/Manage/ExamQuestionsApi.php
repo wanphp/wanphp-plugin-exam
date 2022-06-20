@@ -1,22 +1,19 @@
 <?php
 
-namespace Wanphp\Plugins\Exam\Application\Manager;
+namespace Wanphp\Plugins\Exam\Application\Manage;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Wanphp\Plugins\Exam\Application\Api;
-use Wanphp\Plugins\Exam\Domain\ExamInterface;
 use Wanphp\Plugins\Exam\Domain\ExamQuestionsInterface;
 
 class ExamQuestionsApi extends Api
 {
 
   private ExamQuestionsInterface $questions;
-  private ExamInterface $exam;
 
-  public function __construct(ExamQuestionsInterface $questions, ExamInterface $exam)
+  public function __construct(ExamQuestionsInterface $questions)
   {
     $this->questions = $questions;
-    $this->exam = $exam;
   }
 
   /**
