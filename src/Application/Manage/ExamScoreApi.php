@@ -23,13 +23,13 @@ class ExamScoreApi extends Api
    * @OA\Get(
    *  path="/admin/exam/score/{id}",
    *  tags={"Exam"},
-   *  summary="查询考试成绩",
+   *  summary="查询成绩",
    *  operationId="GetScore",
    *  security={{"bearerAuth":{}}},
    *  @OA\Parameter(
    *    name="id",
    *    in="path",
-   *    description="考试成绩ID",
+   *    description="成绩ID",
    *    required=true,
    *    @OA\Schema(format="int64",type="integer")
    *  ),

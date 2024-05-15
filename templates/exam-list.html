@@ -1,87 +1,65 @@
-{% extends "admin/common/base.html" %}
-{% block styles %}
-<!-- DataTables -->
-<link rel="stylesheet" href="/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
-<link rel="stylesheet" href="/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
-<link rel="stylesheet" href="/plugins/select2/css/select2.min.css">
-{% endblock %}
-{% block container %}
-<div class="card">
+<div id="exam-list" class="card">
   <div class="card-header">
     <h3 class="card-title">{{title}}</h3>
     <div class="card-tools">
       <div class="btn-group">
-        <a href="/admin/exam/content" class="btn btn-tool"><i class="fas fa-plus-square"></i>添加</a>
+        <a href="javascript:" data-link="/admin/exam/content" class="btn btn-tool" data-bs-toggle="tooltip" data-bs-title="添加知识竞赛">
+          <i class="fas fa-plus-square"></i>添加
+        </a>
+        <a href="javascript:" data-link="/admin/download/question/template" class="btn btn-tool" target="_blank" data-bs-toggle="tooltip"
+           data-bs-title="下载模板">
+          <i class="fas fa-download"></i>下载模板
+        </a>
       </div>
     </div>
   </div>
   <div class="card-body">
-    <table id="examData" class="table table-sm table-bordered table-hover">
-      <thead>
-      <tr>
-        <th>封面、海报</th>
-        <th>科目</th>
-        <th>考试描述</th>
-        <th>操作</th>
-      </tr>
-      </thead>
-    </table>
+    <table id="examData" class="table table-sm table-bordered table-hover"></table>
   </div>
   <!-- /.card-body -->
 </div>
 <!-- /.card -->
-{% endblock %}
-
-{% block scripts %}
 <!-- DataTables -->
-<script src="/plugins/datatables/jquery.dataTables.min.js"></script>
-<script src="/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-<script src="/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-<script src="/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-<script src="/js/dataTable.defaults.js"></script>
 <script type="text/javascript">
-  var datatables;
-
-  $(document).ready(function () {
-    datatables = $('#examData').DataTable({
-      ajax: "/admin/exam",
-      rowId: 'id',
-      columns: [
-        {
-          data: "cover", render: function (data, type, row, meta) {
-            return '<img src="' + data + '" height="25">';
-          }
-        },
-        {data: "title"},
-        {data: "description"},
-        {
-          data: "op", render: function (data, type, row, meta) {
-            return '<a href="/admin/exam/content/' + row.id + '" class="btn btn-tool"><i class="fas fa-edit"></i>修改</a>' +
-              '<a href="/admin/exam/question/' + row.id + '" class="btn btn-tool"><i class="fas fa-question-square"></i>考题</a>' +
-              '<a href="/admin/exam/record/' + row.id + '" class="btn btn-tool"><i class="far fa-list-alt"></i>记录</a>' +
-              '<button type="button" class="btn btn-tool del"><i class="fas fa-trash-alt"></i>删除</button>';
-          }
-        }
-      ]
-    });
-    $('#examData tbody').on('click', 'button.del', function () {
-      var data = datatables.row($(this).parents('tr')).data();
-      var deltr = $(this).parents('tr');
-      dialog('删除考试科目', '是否确认删除考试科目', function () {
-        $.ajax({
-          url: '/admin/exam/' + data.id,
-          type: 'POST',
-          headers: {"X-HTTP-Method-Override": "DELETE"},
-          dataType: 'json',
-          success: function (data) {
-            datatables.row(deltr).remove().draw(false);
-            Swal.fire({icon: 'success', title: '删除成功！', showConfirmButton: false, timer: 1500});
+  loadScript('/js/spark-md5.min.js');
+  loadScript('/js/upfile.js');
+  loadScript('/plugins/exam/js/examList.js', function () {
+    $(document).ready(function () {
+      examDataTables = $('#exam-list #examData').DataTable({
+        ajax: basePath + "/admin/exam",
+        rowId: 'id',
+        columns: [
+          {
+            title: '知识竞赛', data: "title", render: function (data, type, row) {
+              return '<div class="d-flex">\n' +
+                '        <span class="d-flex">\n' +
+                '          <img src="' + (row.cover ? row.cover : '/images/no-image.png') + '" class="rounded-1 shadow-sm object-fit-cover" style="width: 48px;height: 48px" role="button">\n' +
+                '        </span>\n' +
+                '    <div class="justify-content-center flex-column d-flex px-2">\n' +
+                '      <a href="javascript:" data-link="/admin/exam/content/' + row.id + '" class="fw-bold text-body" data-bs-toggle="tooltip" data-bs-title="点击修改">' + data + '</a>\n' +
+                '      <span class="text-body-tertiary">' + row.description + '</span>\n' +
+                '    </div>\n' +
+                '  </div>';
+            }
           },
-          error: errorDialog
-        });
+          {
+            title: '竞赛时间', data: "startTime", render: function (data, type, row) {
+              return moment(data * 1000).format('YYYY-MM-DD HH:mm:ss') + '<br>' + moment(row.endTime * 1000).format('YYYY-MM-DD HH:mm:ss');
+            }
+          },
+          {
+            title: '操作', className: 'align-middle',
+            data: null,
+            render: function (data, type, row, meta) {
+              return '<a href="javascript:" data-link="/admin/exam/content/' + row.id + '" class="btn btn-tool"  data-bs-toggle="tooltip" data-bs-title="修改"><i class="fas fa-edit"></i>修改</a>' +
+                '<button type="button" class="btn btn-tool del" data-bs-toggle="tooltip" data-bs-title="删除"><i class="fas fa-trash-alt"></i>删除</button><br>' +
+                '<button type="button" class="btn btn-tool import" data-bs-toggle="tooltip" data-bs-title="导入题库"><i class="fas fa-file-import"></i>导入</button>' +
+                '<a href="javascript:" data-link="/admin/exam/question/' + row.id + '" class="btn btn-tool" data-bs-toggle="tooltip" data-bs-title="题库管理"><i class="far fa-question-circle"></i>题库</a>' +
+                '<a href="javascript:" data-link="/admin/exam/record/' + row.id + '" class="btn btn-tool" data-bs-toggle="tooltip" data-bs-title="用户参与记录"><i class="far fa-list-alt"></i>记录</a>';
+            }
+          }
+        ]
       });
     });
-
   });
 </script>
-{% endblock %}

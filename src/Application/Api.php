@@ -6,17 +6,17 @@ use Wanphp\Libray\Slim\Action;
 
 /**
  * @OA\Info(
- *     description="在线考试插件，插件不能单独运行",
+ *     description="在线知识竞赛插件，插件不能单独运行",
  *     version="1.0.0",
- *     title="在线考试"
+ *     title="在线知识竞赛"
  * )
  * @OA\Tag(
  *     name="Exam",
- *     description="前端考试"
+ *     description="前端知识竞赛"
  * )
  * @OA\Tag(
  *     name="Exam item",
- *     description="考试科目管理"
+ *     description="知识竞赛管理"
  * )
  * @OA\Tag(
  *     name="Question bank",

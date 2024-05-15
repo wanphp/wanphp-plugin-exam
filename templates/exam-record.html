@@ -1,89 +1,48 @@
-{% extends "admin/common/base.html" %}
-{% block styles %}
-<!-- DataTables -->
-<link rel="stylesheet" href="/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
-<link rel="stylesheet" href="/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
-<link rel="stylesheet" href="/plugins/select2/css/select2.min.css">
-{% endblock %}
-{% block container %}
-<div class="card">
+<div id="exam-record" class="card">
   <div class="card-header">
     <h3 class="card-title">{{title}}</h3>
+    <div class="card-tools">
+      <div class="btn-group">
+        <a href="/admin/download/exam/record/{{id}}" class="btn btn-tool" target="_blank"><i class="fas fa-download"></i>下载记录</a>
+      </div>
+    </div>
   </div>
   <div class="card-body">
-    <table id="recordData" class="table table-sm table-bordered table-hover">
-      <thead>
-      <tr>
-        <th>微信</th>
-        <th>姓名</th>
-        <th>手机号</th>
-        <th>得分</th>
-        <th>作答时间</th>
-        <th>操作</th>
-      </tr>
-      </thead>
-    </table>
+    <table id="recordData" class="table table-sm table-bordered table-hover"></table>
   </div>
   <!-- /.card-body -->
 </div>
 <!-- /.card -->
-{% endblock %}
-
-{% block scripts %}
-<!-- DataTables -->
-<script src="/plugins/datatables/jquery.dataTables.min.js"></script>
-<script src="/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-<script src="/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-<script src="/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-<script src="/js/dataTable.defaults.js"></script>
-<script src="/plugins/moment/moment.min.js"></script>
 <script type="text/javascript">
-  var datatables;
-
-  $(document).ready(function () {
-    datatables = $('#recordData').DataTable({
-      ajax: "/admin/exam/record/{{id}}",
-      rowId: 'id',
-      columns: [
-        {
-          data: "user", render: function (data) {
-            return '<img src="' + data.headimgurl + '" class="img-thumbnail" style="padding:0;" width="30">' + data.nickname;
+  loadScript('/plugins/exam/js/record.js', function () {
+    $(document).ready(function () {
+      examRecordDataTables = $('#recordData').DataTable({
+        ajax: basePath + "/admin/exam/record/{{id}}",
+        rowId: 'id',
+        columns: [
+          {
+            title: '微信',
+            data: "user", render: function (data) {
+              return '<img src="' + data.headimgurl + '" class="img-thumbnail" style="padding:0;" width="30">' + data.nickname;
+            }
+          },
+          {title: '姓名', data: "name"},
+          {title: '手机号', data: "tel"},
+          {title: '得分', data: "score"},
+          {
+            title: '作答时间',
+            data: "startTime", render: function (data, type, row, meta) {
+              return moment(parseInt(data) * 1000).format('YYYY-MM-DD HH:mm:ss') + '(用时：' + (row.endTime - data) + '秒）';
+            }
+          },
+          {
+            title: '操作',
+            data: null, render: function (data, type, row, meta) {
+              return '<button type="button" class="btn btn-tool view"><i class="fas fa-eye"></i>查看</button>';
+            }
           }
-        },
-        {data: "name"},
-        {data: "tel"},
-        {data: "score"},
-        {
-          data: "startTime", render: function (data, type, row, meta) {
-            return moment(new Date(parseInt(data) * 1000)).format('YYYY-MM-DD HH:mm:ss') + ' - ' +
-              moment(new Date(parseInt(row.endTime) * 1000)).format('YYYY-MM-DD HH:mm:ss');
-          }
-        },
-        {
-          data: "op", render: function (data, type, row, meta) {
-            return '<button type="button" class="btn btn-tool view"><i class="fas fa-eye"></i>查看</button>';
-          }
-        }
-      ]
-    });
-    $('#aboutData tbody').on('click', 'button.view', function () {
-      var data = datatables.row($(this).parents('tr')).data();
-      $.ajax({
-        url: '/admin/exam/record/' + data.id,
-        type: 'POST',
-        dataType: 'json',
-        success: function (res) {
-          var body = '<table class="table table-sm table-bordered table-hover"><thead><tr><th>问题</th><th>选项</th><th>正确答案</th><th>用户答案</th></tr></thead><tbody>';
-          res.question.forEach(function (value, key) {
-            body += '<tr><td>' + value.question + '</td><td>' + value.answerItem.join('<br>') + '</td><td>' + value.answer.join('<br') + '</td><td>' + res.answer[key].join('<br') + '</td></tr>'
-          });
-          body += '</tbody></table>';
-          modalDialog(data.nickname + '答题情况', body, 'modal-xl');
-        },
-        error: errorDialog
+        ]
       });
     });
-
   });
 </script>
-{% endblock %}

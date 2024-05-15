@@ -6,8 +6,8 @@ use Wanphp\Libray\Mysql\EntityTrait;
 
 /**
  * @OA\Schema(
- *   title="考题",
- *   description="考题",
+ *   title="题库",
+ *   description="题库",
  *   required={"question","answer"}
  * )
  */
@@ -21,25 +21,25 @@ class ExamQuestionsEntity implements \JsonSerializable
    */
   private ?int $id;
   /**
-   * @DBType({"key": "UNI","type":"smallint(11) NULL DEFAULT NULL"})
-   * @OA\Property(description="考试科目ID")
+   * @DBType({"key": "MUL","type":"smallint(11) NULL DEFAULT NULL"})
+   * @OA\Property(description="知识竞赛ID")
    * @var integer
    */
   private int $examId;
   /**
    * @DBType({"type":"varchar(300) NOT NULL DEFAULT ''"})
    * @var string
-   * @OA\Property(description="考题内容")
+   * @OA\Property(description="题目内容")
    */
   private string $question;
   /**
-   * @DBType({"type":"varchar(500) NOT NULL DEFAULT '[]'"})
+   * @DBType({"type":"json NULL"})
    * @var array
    * @OA\Property(@OA\Items(),description="选择题答案选项,填空题留空")
    */
   private array $answerItem;
   /**
-   * @DBType({"type":"varchar(300) NOT NULL DEFAULT '[]'"})
+   * @DBType({"type":"json NULL"})
    * @var array
    * @OA\Property(@OA\Items(),description="正确答案")
    */

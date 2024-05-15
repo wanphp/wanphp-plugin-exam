@@ -22,10 +22,10 @@ class ExamQuestionsApi extends Api
    *  path="/admin/exam/question",
    *  tags={"Question bank"},
    *  security={{"bearerAuth":{}}},
-   *  summary="添加考试试题",
+   *  summary="添加知识竞赛试题",
    *  operationId="addQuestion",
    *   @OA\RequestBody(
-   *     description="考试试题",
+   *     description="知识竞赛试题",
    *     required=true,
    *     @OA\MediaType(
    *       mediaType="application/json",
@@ -48,7 +48,7 @@ class ExamQuestionsApi extends Api
    *  path="/admin/exam/question/{id}",
    *  tags={"Question bank"},
    *  security={{"bearerAuth":{}}},
-   *  summary="修改考试试题",
+   *  summary="修改知识竞赛试题",
    *  operationId="editQuestion",
    *   @OA\Parameter(
    *     name="id",
@@ -80,7 +80,7 @@ class ExamQuestionsApi extends Api
    * @OA\Delete(
    *  path="/admin/exam/question/{id}",
    *  tags={"Question bank"},
-   *  summary="删除考试试题",
+   *  summary="删除知识竞赛试题",
    *  operationId="delQuestion",
    *  security={{"bearerAuth":{}}},
    *  @OA\Parameter(
@@ -107,13 +107,13 @@ class ExamQuestionsApi extends Api
    * @OA\Get(
    *  path="/admin/exam/question/{id}",
    *  tags={"Question bank"},
-   *  summary="考试试题管理",
+   *  summary="知识竞赛试题管理",
    *  operationId="ListQuestion",
    *  security={{"bearerAuth":{}}},
    *  @OA\Parameter(
    *    name="id",
    *    in="path",
-   *    description="科目ID",
+   *    description="知识竞赛ID",
    *    required=true,
    *    @OA\Schema(format="int64",type="integer")
    *  ),
@@ -126,9 +126,11 @@ class ExamQuestionsApi extends Api
     switch ($this->request->getMethod()) {
       case 'POST':
         $data = $this->getFormData();
+        $data['answerItem'] = explode("\r\n",$data['answerItem']);
+        $data['answer'] = explode("\r\n",$data['answer']);
         $id = $this->questions->get('id', ['question' => $data['question']]);
         if (is_numeric($id) && $id > 0) {
-          return $this->respondWithError('考题已添加过');
+          return $this->respondWithError('这题已添加过');
         } else {
           $data['ctime'] = time();
           $data['id'] = $this->questions->insert($data);
@@ -136,11 +138,13 @@ class ExamQuestionsApi extends Api
         }
       case 'PUT':
         $data = $this->getFormData();
+        $data['answerItem'] = explode("\r\n",$data['answerItem']);
+        $data['answer'] = explode("\r\n",$data['answer']);
         $id = (int)$this->resolveArg('id');
         if (isset($data['question'])) {
           $exam_id = $this->questions->get('id', ['id[!]' => $id, 'question' => $data['question']]);
           if ($exam_id) {
-            return $this->respondWithError('考题已存在');
+            return $this->respondWithError('这题已存在');
           }
         }
         if ($id > 0) {
@@ -168,18 +172,17 @@ class ExamQuestionsApi extends Api
 
           $recordsFiltered = $this->questions->count('id', $where);
           $where['LIMIT'] = $this->getLimit();
-          $where['ORDER'] = $this->getOrder();
 
           $data = [
             "draw" => $params['draw'],
             "recordsTotal" => $this->questions->count('id', ['examId' => $this->resolveArg('id')]),
             "recordsFiltered" => $recordsFiltered,
-            'data' => $this->questions->select('*', $where)
+            'data' => $this->questions->select('id,question,answerItem[JSON],answer[JSON],orderly,ctime', $where)
           ];
           return $this->respondWithData($data);
         } else {
           $data = [
-            'title' => '考试试题管理',
+            'title' => '竞赛题目管理',
             'id' => $this->resolveArg('id')
           ];
 

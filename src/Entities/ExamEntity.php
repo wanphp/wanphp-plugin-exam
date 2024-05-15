@@ -6,8 +6,8 @@ use Wanphp\Libray\Mysql\EntityTrait;
 
 /**
  * @OA\Schema(
- *   title="考题科目",
- *   description="考题科目，考题内容",
+ *   title="知识竞赛",
+ *   description="知识竞赛，知识竞赛说明",
  *   required={"title"}
  * )
  */
@@ -24,49 +24,49 @@ class ExamEntity implements \JsonSerializable
   /**
    * @DBType({"type":"varchar(100) NOT NULL DEFAULT ''"})
    * @var string
-   * @OA\Property(description="考题科目")
+   * @OA\Property(description="知识竞赛")
    */
   private string $title;
   /**
    * @DBType({"type":"varchar(500) NOT NULL DEFAULT ''"})
    * @var string
-   * @OA\Property(description="考题科目介绍")
+   * @OA\Property(description="知识竞赛描述")
    */
   private string $description;
   /**
    * @DBType({"type":"text NOT NULL DEFAULT ''"})
    * @var string
-   * @OA\Property(description="考题科目说明")
+   * @OA\Property(description="知识竞赛说明")
    */
   private string $content;
   /**
    * @DBType({"type":"varchar(50) NOT NULL DEFAULT ''"})
    * @var string
-   * @OA\Property(description="封面、海报")
+   * @OA\Property(description="封面")
    */
   private string $cover;
   /**
    * @DBType({"type":"char(3) NOT NULL DEFAULT 0"})
    * @var integer
-   * @OA\Property(description="每次抽取考题数量,最多999题，成绩按满分100分计算")
+   * @OA\Property(description="每次抽取题目数量,最多999题，成绩按满分100分计算")
    */
   private int $size;
   /**
    * @DBType({"type":"char(3) NOT NULL DEFAULT 0"})
    * @var integer
-   * @OA\Property(description="考试时间,最多999分钟")
+   * @OA\Property(description="作答时间,最多999分钟")
    */
   private int $examTime;
   /**
    * @DBType({"type":"char(10) NOT NULL DEFAULT 0"})
    * @var integer
-   * @OA\Property(description="考题科目开始时间")
+   * @OA\Property(description="竞赛开始时间")
    */
   private int $startTime;
   /**
    * @DBType({"type":"char(10) NOT NULL DEFAULT 0"})
    * @var integer
-   * @OA\Property(description="考题科目结束时间")
+   * @OA\Property(description="竞赛结束时间")
    */
   private int $endTime;
   /**

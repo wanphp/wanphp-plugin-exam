@@ -1,2 +1,2 @@
 # wanphp-plugin-exam
-在一考试插件
+在线考试、知识竞赛插件

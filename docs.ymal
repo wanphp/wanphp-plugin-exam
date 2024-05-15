@@ -1,17 +1,17 @@
 openapi: 3.0.0
 info:
-  title: 在线考试
-  description: 在线考试插件，插件不能单独运行
+  title: 在线知识竞赛
+  description: 在线知识竞赛插件，插件不能单独运行
   version: 1.0.0
 paths:
   /admin/exam:
     post:
       tags:
         - 'Exam item'
-      summary: 添加考试科目
+      summary: 添加知识竞赛
       operationId: addExam
       requestBody:
-        description: 考试科目
+        description: 知识竞赛
         required: true
         content:
           application/json:
@@ -39,13 +39,13 @@ paths:
     put:
       tags:
         - 'Exam item'
-      summary: 修改考试科目
+      summary: 修改知识竞赛
       operationId: editExam
       parameters:
         -
           name: id
           in: path
-          description: 科目ID
+          description: 竞赛ID
           required: true
           schema:
             type: integer
@@ -78,13 +78,13 @@ paths:
     delete:
       tags:
         - 'Exam item'
-      summary: 删除考试科目
+      summary: 删除知识竞赛
       operationId: delExam
       parameters:
         -
           name: id
           in: path
-          description: 科目ID
+          description: 竞赛ID
           required: true
           schema:
             type: integer
@@ -111,7 +111,7 @@ paths:
     get:
       tags:
         - 'Exam item'
-      summary: 考试科目管理
+      summary: 知识竞赛管理
       operationId: ExamItemManager
       responses:
         '200':
@@ -133,10 +133,10 @@ paths:
     post:
       tags:
         - 'Question bank'
-      summary: 添加考试试题
+      summary: 添加知识竞赛试题
       operationId: addQuestion
       requestBody:
-        description: 考试试题
+        description: 知识竞赛试题
         required: true
         content:
           application/json:
@@ -164,13 +164,13 @@ paths:
     get:
       tags:
         - 'Question bank'
-      summary: 考试试题管理
+      summary: 知识竞赛试题管理
       operationId: ListQuestion
       parameters:
         -
           name: id
           in: path
-          description: 科目ID
+          description: 知识竞赛ID
           required: true
           schema:
             type: integer
@@ -194,7 +194,7 @@ paths:
     put:
       tags:
         - 'Question bank'
-      summary: 修改考试试题
+      summary: 修改知识竞赛试题
       operationId: editQuestion
       parameters:
         -
@@ -233,7 +233,7 @@ paths:
     delete:
       tags:
         - 'Question bank'
-      summary: 删除考试试题
+      summary: 删除知识竞赛试题
       operationId: delQuestion
       parameters:
         -
@@ -266,13 +266,13 @@ paths:
     get:
       tags:
         - Exam
-      summary: 查询考试成绩
+      summary: 查询成绩
       operationId: GetScore
       parameters:
         -
           name: id
           in: path
-          description: 考试成绩ID
+          description: 成绩ID
           required: true
           schema:
             type: integer
@@ -299,10 +299,10 @@ paths:
     post:
       tags:
         - Exam
-      summary: 用户考试交卷
+      summary: 用户交卷
       operationId: addScore
       requestBody:
-        description: 考试成绩
+        description: 成绩
         required: true
         content:
           application/json:
@@ -330,13 +330,13 @@ paths:
     get:
       tags:
         - Exam
-      summary: 查询考试成绩
+      summary: 查询成绩
       operationId: userGetScore
       parameters:
         -
           name: id
           in: path
-          description: 考试成绩ID
+          description: 成绩ID
           required: true
           schema:
             type: integer
@@ -363,13 +363,13 @@ paths:
     get:
       tags:
         - Exam
-      summary: 获取指定科目考试试题
+      summary: 获取指定知识竞赛试题
       operationId: GetRandQuestion
       parameters:
         -
           name: id
           in: path
-          description: 考试科目ID
+          description: 知识竞赛ID
           required: true
           schema:
             type: integer
@@ -399,51 +399,51 @@ components:
       title: 成功提示
       type: object
     ExamEntity:
-      title: 考题科目
-      description: 考题科目，考题内容
+      title: 知识竞赛
+      description: 知识竞赛，知识竞赛说明
       required:
         - title
       properties:
         title:
-          description: 考题科目
+          description: 知识竞赛
           type: string
         description:
-          description: 考题科目介绍
+          description: 知识竞赛描述
           type: string
         content:
-          description: 考题科目说明
+          description: 知识竞赛说明
           type: string
         cover:
-          description: 封面、海报
+          description: 封面
           type: string
         size:
-          description: '每次抽取考题数量,最多999题，成绩按满分100分计算'
+          description: '每次抽取题目数量,最多999题，成绩按满分100分计算'
           type: integer
         examTime:
-          description: '考试时间,最多999分钟'
+          description: '作答时间,最多999分钟'
           type: integer
         startTime:
-          description: 考题科目开始时间
+          description: 竞赛开始时间
           type: integer
         endTime:
-          description: 考题科目结束时间
+          description: 竞赛结束时间
           type: integer
         ctime:
           description: 创建时间
           type: integer
       type: object
     ExamQuestionsEntity:
-      title: 考题
-      description: 考题
+      title: 题库
+      description: 题库
       required:
         - question
         - answer
       properties:
         examId:
-          description: 考试科目ID
+          description: 知识竞赛ID
           type: integer
         question:
-          description: 考题内容
+          description: 题目内容
           type: string
         answerItem:
           description: '选择题答案选项,填空题留空'
@@ -468,7 +468,7 @@ components:
         - questions
       properties:
         examId:
-          description: 考试科目ID
+          description: 知识竞赛ID
           type: integer
         uid:
           description: 答题用户ID
@@ -480,7 +480,7 @@ components:
           description: 电话
           type: string
         questions:
-          description: 考题
+          description: 问题
           type: array
           items: {  }
         answer:
@@ -506,10 +506,10 @@ components:
 tags:
   -
     name: Exam
-    description: 前端考试
+    description: 前端知识竞赛
   -
     name: 'Exam item'
-    description: 考试科目管理
+    description: 知识竞赛管理
   -
     name: 'Question bank'
     description: 后端题库管理

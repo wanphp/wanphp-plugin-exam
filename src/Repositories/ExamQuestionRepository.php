@@ -14,6 +14,6 @@ class ExamQuestionRepository extends \Wanphp\Libray\Mysql\BaseRepository impleme
 
   public function randQuestions(int $id, int $size): array
   {
-    return $this->db->rand($this->tableName, ['id', 'question[JSON]', 'answerItem[JSON]', 'orderly'], ['examId' => $id, 'LIMIT' => $size]);
+    return $this->db->rand($this->tableName, ['id', 'question', 'answerItem[JSON]', 'answer[JSON]', 'orderly'], ['examId' => $id, 'LIMIT' => $size]);
   }
 }

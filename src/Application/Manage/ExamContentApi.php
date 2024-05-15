@@ -22,7 +22,7 @@ class ExamContentApi extends \Wanphp\Plugins\Exam\Application\Api
     $id = intval($this->args['id'] ?? 0);
     if ($id > 0) $exam = $this->exam->get('*', ['id' => $id]);
     $data = [
-      'title' => '添加/修改考试科目',
+      'title' => '添加/修改知识竞赛',
       'exam' => $exam ?? [],
       'time' => time()
     ];

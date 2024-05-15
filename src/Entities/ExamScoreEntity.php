@@ -23,7 +23,7 @@ class ExamScoreEntity implements JsonSerializable
   private ?int $id;
   /**
    * @DBType({"key": "MUL","type":"smallint NULL DEFAULT NULL"})
-   * @OA\Property(description="考试科目ID")
+   * @OA\Property(description="知识竞赛ID")
    * @var integer
    */
   private int $examId;
@@ -46,13 +46,13 @@ class ExamScoreEntity implements JsonSerializable
    */
   private string $tel;
   /**
-   * @DBType({"type":"varchar(500) NOT NULL DEFAULT '[]'"})
+   * @DBType({"type":"json NULL"})
    * @var array
-   * @OA\Property(@OA\Items(),description="考题")
+   * @OA\Property(@OA\Items(),description="问题")
    */
   private array $questions;
   /**
-   * @DBType({"type":"varchar(300) NOT NULL DEFAULT '[]'"})
+   * @DBType({"type":"json NULL"})
    * @var array
    * @OA\Property(@OA\Items(),description="答案")
    */

@@ -19,11 +19,23 @@ class ExamItemApi extends Api
    */
   protected function action(): Response
   {
-    $id = (int)$this->resolveArg('id');
+    $id = $this->args['id'] ?? 0;
     if ($id > 0) {
-      return $this->respondWithData($this->exam->get('*', ['id' => $id]));
+      $exam = $this->exam->get('*', ['id' => $id]);
+      if($exam){
+        $exam['cover'] = $this->request->getUri()->getScheme() . '://' . $this->request->getUri()->getHost() . $exam['cover'];
+        return $this->respondWithData($exam);
+      }else{
+        return $this->respondWithError('未找到');
+      }
     } else {
-      return $this->respondWithError('ID错误');
+      $res = [];
+      foreach ($this->exam->select('id,title,cover,description,startTime,endTime') as $data) {
+        if ($data['cover']) $data['cover'] = $this->request->getUri()->getScheme() . '://' . $this->request->getUri()->getHost() . $data['cover'];
+        $res[] = $data;
+      }
+
+      return $this->respondWithData($res);
     }
   }
 }

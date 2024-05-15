@@ -2,12 +2,8 @@
 
 namespace Wanphp\Plugins\Exam\Application\Manage;
 
-use Exception;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface as Response;
-use Wanphp\Libray\User\User;
+use Wanphp\Libray\Slim\WpUserInterface;
 use Wanphp\Plugins\Exam\Domain\ExamInterface;
 use Wanphp\Plugins\Exam\Domain\ExamQuestionsInterface;
 use Wanphp\Plugins\Exam\Domain\ExamScoreInterface;
@@ -18,29 +14,25 @@ class ExamRecordApi extends \Wanphp\Plugins\Exam\Application\Api
   private ExamInterface $exam;
   private ExamQuestionsInterface $questions;
   private ExamScoreInterface $examScore;
-  private User $user;
+  private WpUserInterface $user;
 
   /**
-   * @param ContainerInterface $container
    * @param ExamInterface $exam
    * @param ExamQuestionsInterface $questions
    * @param ExamScoreInterface $examScore
-   * @throws ContainerExceptionInterface
-   * @throws NotFoundExceptionInterface
+   * @param WpUserInterface $user
    */
   public function __construct(
-    ContainerInterface     $container,
     ExamInterface          $exam,
     ExamQuestionsInterface $questions,
-    ExamScoreInterface     $examScore
+    ExamScoreInterface     $examScore,
+    WpUserInterface        $user
   )
   {
     $this->exam = $exam;
     $this->questions = $questions;
     $this->examScore = $examScore;
-    $user = $container->get('userServer');
-    $redisConfig = $container->get('redis');
-    $this->user = new User($user['appId'], $user['appSecret'], $user['apiUri'], $redisConfig);
+    $this->user = $user;
   }
 
   /**
@@ -51,13 +43,13 @@ class ExamRecordApi extends \Wanphp\Plugins\Exam\Application\Api
     switch ($this->request->getMethod()) {
       case 'POST':
         $id = (int)$this->resolveArg('id');
-        $result = $this->examScore->get('question[JSON],answer[JSON]', ['id' => $id]);
-        $question = $this->questions->select('id,question,answerItem[JSON],answer[JSON]', ['id' => $result['question']]);
+        $result = $this->examScore->get('questions[JSON],answer[JSON]', ['id' => $id]);
+        $question = $this->questions->select('id,question,answerItem[JSON],answer[JSON]', ['id' => $result['questions']]);
         $questions = [];
         foreach ($question as $item) {
-          $questions[$item['id']] = $question;
+          $questions[$item['id']] = $item;
         }
-        foreach ($result['question'] as &$id) {
+        foreach ($result['questions'] as &$id) {
           $id = $questions[$id];
         }
         return $this->respondWithData($result);
@@ -75,7 +67,6 @@ class ExamRecordApi extends \Wanphp\Plugins\Exam\Application\Api
 
           $recordsFiltered = $this->examScore->count('id', $where);
           $where['LIMIT'] = $this->getLimit();
-          $where['ORDER'] = $this->getOrder();
 
           $res = $this->examScore->select('*', $where);
           if ($res) {
@@ -88,7 +79,7 @@ class ExamRecordApi extends \Wanphp\Plugins\Exam\Application\Api
           }
           $data = [
             "draw" => $params['draw'],
-            "recordsTotal" => $this->examScore->count('id', ['examId' => $params['id']]),
+            "recordsTotal" => $this->examScore->count('id', ['examId' => $this->resolveArg('id')]),
             "recordsFiltered" => $recordsFiltered,
             'data' => $res
           ];
@@ -96,7 +87,7 @@ class ExamRecordApi extends \Wanphp\Plugins\Exam\Application\Api
         } else {
           $id = (int)$this->resolveArg('id');
           $data = [
-            'title' => $this->exam->get('title', ['id' => $id]) . '考试记录',
+            'title' => $this->exam->get('title', ['id' => $id]) . '参与记录',
             'id' => $id
           ];
 

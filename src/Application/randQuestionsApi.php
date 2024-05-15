@@ -22,13 +22,13 @@ class randQuestionsApi extends Api
    * @OA\Get(
    *  path="/api/exam/randquestion/{id}",
    *  tags={"Exam"},
-   *  summary="获取指定科目考试试题",
+   *  summary="获取指定知识竞赛试题",
    *  operationId="GetRandQuestion",
    *  security={{"bearerAuth":{}}},
    *  @OA\Parameter(
    *    name="id",
    *    in="path",
-   *    description="考试科目ID",
+   *    description="知识竞赛ID",
    *    required=true,
    *    @OA\Schema(format="int64",type="integer")
    *  ),
@@ -39,11 +39,11 @@ class randQuestionsApi extends Api
   protected function action(): Response
   {
     $id = (int)$this->resolveArg('id');
-    // 随机取考题
+    // 随机取问题
     if ($id > 0) {
       $size = $this->exam->get('size', ['id' => $id]);
       if ($size) return $this->respondWithData($this->questions->randQuestions($id, $size));
-      else return $this->respondWithError('考题数量错误');
+      else return $this->respondWithError('数量错误');
     } else {
       return $this->respondWithError('ID错误');
     }
